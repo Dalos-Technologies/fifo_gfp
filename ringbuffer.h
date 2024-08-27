@@ -29,7 +29,7 @@ extern "C"
  * and the indicies of the buffer.
  */
 typedef size_t ring_buffer_size_t;
-
+typedef int    ring_buffer_data_t;
 /**
  * Used as a modulo operator
  * as <tt> a % b = (a & (b − 1)) </tt>
@@ -41,16 +41,16 @@ typedef size_t ring_buffer_size_t;
 /**
  * Simplifies the use of <tt>struct ring_buffer_t</tt>.
  */
-typedef struct ring_buffer_t ring_buffer_t;
+typedef struct ring_buffer ring_buffer_t;
 
 /**
  * Structure which holds a ring buffer.
  * The buffer contains a buffer array
  * as well as metadata for the ring buffer.
  */
-struct ring_buffer_t {
+struct __attribute__((packed)) ring_buffer {
   /** Buffer memory. */
-  char *buffer;
+  ring_buffer_data_t *buffer;
   /** Buffer mask. */
   ring_buffer_size_t buffer_mask;
   /** Index of tail. */
@@ -67,14 +67,14 @@ struct ring_buffer_t {
  * @param buf The buffer allocated for the ringbuffer.
  * @param buf_size The size of the allocated ringbuffer.
  */
-void ring_buffer_init(ring_buffer_t *buffer, char *buf, size_t buf_size);
+void ring_buffer_init(ring_buffer_t *buffer, ring_buffer_data_t *buf, size_t buf_size);
 
 /**
  * Adds a byte to a ring buffer.
  * @param buffer The buffer in which the data should be placed.
  * @param data The byte to place.
  */
-void ring_buffer_queue(ring_buffer_t *buffer, char data);
+void ring_buffer_queue(ring_buffer_t *buffer, ring_buffer_data_t data);
 
 /**
  * Adds an array of bytes to a ring buffer.
@@ -82,7 +82,7 @@ void ring_buffer_queue(ring_buffer_t *buffer, char data);
  * @param data A pointer to the array of bytes to place in the queue.
  * @param size The size of the array.
  */
-void ring_buffer_queue_arr(ring_buffer_t *buffer, const char *data, ring_buffer_size_t size);
+void ring_buffer_queue_arr(ring_buffer_t *buffer, const ring_buffer_data_t *data, ring_buffer_size_t size);
 
 /**
  * Returns the oldest byte in a ring buffer.
@@ -90,7 +90,7 @@ void ring_buffer_queue_arr(ring_buffer_t *buffer, const char *data, ring_buffer_
  * @param data A pointer to the location at which the data should be placed.
  * @return 1 if data was returned; 0 otherwise.
  */
-uint8_t ring_buffer_dequeue(ring_buffer_t *buffer, char *data);
+uint8_t ring_buffer_dequeue(ring_buffer_t *buffer, ring_buffer_data_t *data);
 
 /**
  * Returns the <em>len</em> oldest bytes in a ring buffer.
@@ -99,7 +99,7 @@ uint8_t ring_buffer_dequeue(ring_buffer_t *buffer, char *data);
  * @param len The maximum number of bytes to return.
  * @return The number of bytes returned.
  */
-ring_buffer_size_t ring_buffer_dequeue_arr(ring_buffer_t *buffer, char *data, ring_buffer_size_t len);
+ring_buffer_size_t ring_buffer_dequeue_arr(ring_buffer_t *buffer, ring_buffer_data_t *data, ring_buffer_size_t len);
 /**
  * Peeks a ring buffer, i.e. returns an element without removing it.
  * @param buffer The buffer from which the data should be returned.
@@ -107,7 +107,7 @@ ring_buffer_size_t ring_buffer_dequeue_arr(ring_buffer_t *buffer, char *data, ri
  * @param index The index to peek.
  * @return 1 if data was returned; 0 otherwise.
  */
-uint8_t ring_buffer_peek(ring_buffer_t *buffer, char *data, ring_buffer_size_t index);
+uint8_t ring_buffer_peek(ring_buffer_t *buffer, ring_buffer_data_t *data, ring_buffer_size_t index);
 
 
 /**
